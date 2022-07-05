@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scanner</title>
+    <link rel="stylesheet" href="./css/mystyle.css" />
+  </head>
+  <body>
+    <div class="big-container">
+      <header>
+        <button class="btn-menu">=</button>
+        <h3 class="font-title title">scanner</h3>
+      </header>
+
+      <div class="viewport" id="interactive"></div>
+
+      <div class="checklist">
+        <h3 class="font-title title-checklist">unlock mesin</h3>
+        <ul>
+          <li class="list-checklist" style="margin-bottom: 5px">
+            <img src="./img/check-icon.svg" alt="icon" />
+            <select name="problem" id="problem" class="list">
+              <option value="">-- Pilih Problem Disini --</option>
+              <option value="topup-oli">Top Up Oli</option>
+              <option value="flex-steam-bocor">Flex Steam Bocor</option>
+            </select>
+          </li>
+          <li class="list-checklist">
+            <img src="./img/check-icon.svg" alt="icon" />
+            <p class="list font-checklist">scan mesin</p>
+          </li>
+          <li class="list-checklist">
+            <img src="./img/check-icon.svg" alt="icon" />
+            <p class="list font-checklist">scan penneng engineer</p>
+          </li>
+          <li class="list-checklist">
+            <img src="./img/locked-icon.svg" alt="icon" />
+            <p class="list font-checklist">scan penneng leader line</p>
+          </li>
+        </ul>
+      </div>
+
+      <footer>
+        <div class="lengkung"></div>
+        <div class="float-button">+</div>
+      </footer>
+    </div>
+    <script src="../uibuilder/vendor/socket.io/socket.io.js">
+      /* REQUIRED: Socket.IO is loaded only once for all instances. Without this, you don't get a websocket connection */
+    </script>
+    <script src="./uibuilderfe.min.js">
+      /* REQUIRED: remove 'min.' to use dev version */
+    </script>
+    <script src="./js/dbr.js"></script>
+    <script src="./index.js">
+      /* OPTIONAL: Put your custom code here */
+    </script>
+
+    <script src="./vendor/jquery-1.9.0.min.js" type="text/javascript"></script>
+    <!-- <script src="https://webrtc.github.io/adapter/adapter-latest.js" type="text/javascript"></script>
+    <script src="./dist/quagga.min.js" type="text/javascript"></script>
+    <script src="./live_w_locator.js" type="text/javascript"></script> -->
+    <script src="./js/myscript.js"></script>
+  </body>
+</html>

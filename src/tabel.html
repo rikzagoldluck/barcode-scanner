@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Log - KTCXPGT</title>
+    <link rel="stylesheet" href="../uibuilder/vendor/sweetalert2/dist/sweetalert2.css" />
+    <script src="../uibuilder/vendor/sweetalert2/dist/sweetalert2.all.min.js"></script>
+    <script src="../uibuilder/vendor/excellentexport/dist/excellentexport.js"></script>
+    <link rel="stylesheet" href="./css/tabel.css" />
+  </head>
+  <body>
+    <header>
+      <a href="/scanner/" style="text-decoration: none" class="btn-menu"><</a>
+      <h3 class="font-title title">rekaman data scan</h3>
+    </header>
+    <div class="conf-container">
+      <a download="somedata.xlsx" id="anchor" href="#" onclick="exportExcel();">export ke excel</a>
+
+      <div class="form-group1">
+        <h4>pilih jumlah baris</h4>
+        <!--		Show Numbers Of Rows 		-->
+        <select name="state" id="maxRows">
+          <option value="5000">Tampilkan semua</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+          <option value="70">70</option>
+          <option value="100">100</option>
+        </select>
+      </div>
+      <!--		Start Pagination -->
+
+      <div class="form-group">
+        <div class="pagination-container">
+          <nav>
+            <ul class="pagination">
+              <li data-page="prev">
+                <span> < </span>
+              </li>
+              <!--	Here the JS Function Will Add the Rows -->
+              <li data-page="next" id="prev">
+                <span> > </span>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <table id="tabel">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>No Mesin</th>
+          <th>Nama Problem</th>
+          <th>PIC Engineering</th>
+          <th>PIC Produksi</th>
+          <th>Tanggal</th>
+          <th>Waktu</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script src="../uibuilder/vendor/socket.io/socket.io.js">
+      /* REQUIRED: Socket.IO is loaded only once for all instances. Without this, you don't get a websocket connection */
+    </script>
+    <script src="./uibuilderfe.min.js">
+      /* REQUIRED: remove 'min.' to use dev version */
+    </script>
+    <script src="../uibuilder/vendor/jquery/dist/jquery.js" type="text/javascript"></script>
+
+    <script>
+      function getDateString() {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = `${date.getMonth() + 1}`.padStart(2, '0');
+        const day = `${date.getDate()}`.padStart(2, '0');
+        return `${day}${month}${year}`;
+      }
+      function exportExcel() {
+        $('#maxRows').val('5000');
+        ExcellentExport.convert({ anchor: 'anchor', filename: 'logscan_' + getDateString(), format: 'xlsx' }, [{ name: 'Log Scan', from: { table: 'tabel' }, removeColumns: [0] }]);
+      }
+      // Send a message back to Node-RED
+      window.fnSendToNR = function fnSendToNR(topic, payload) {
+        uibuilder.send({
+          topic,
+          payload,
+        });
+      };
+
+      // run this function when the document is loaded
+      window.onload = function () {
+        // Start up uibuilder - see the docs for the optional parameters
+        uibuilder.start();
+
+        $(function () {
+          function limitPagging() {
+            // alert($('.pagination li').length)
+
+            if ($('.pagination li').length > 7) {
+              if ($('.pagination li.active').attr('data-page') <= 3) {
+                $('.pagination li:gt(5)').hide();
+                $('.pagination li:lt(5)').show();
+                $('.pagination [data-page="next"]').show();
+              }
+              if ($('.pagination li.active').attr('data-page') > 3) {
+                $('.pagination li:gt(0)').hide();
+                $('.pagination [data-page="next"]').show();
+                for (let i = parseInt($('.pagination li.active').attr('data-page')) - 2; i <= parseInt($('.pagination li.active').attr('data-page')) + 2; i++) {
+                  $('.pagination [data-page="' + i + '"]').show();
+                }
+              }
+            }
+          }
+
+          function getPagination(table) {
+            var lastPage = 1;
+
+            $('#maxRows')
+              .on('change', function (evt) {
+                //$('.paginationprev').html('');						// reset pagination
+
+                lastPage = 1;
+                $('.pagination').find('li').slice(1, -1).remove();
+                var trnum = 0; // reset tr counter
+                var maxRows = parseInt($(this).val()); // get Max Rows from select option
+
+                if (maxRows == 5000) {
+                  $('.pagination').hide();
+                } else {
+                  $('.pagination').show();
+                }
+
+                var totalRows = $(table + ' tbody tr').length; // numbers of rows
+                $(table + ' tr:gt(0)').each(function () {
+                  // each TR in  table and not the header
+                  trnum++; // Start Counter
+                  if (trnum > maxRows) {
+                    // if tr number gt maxRows
+
+                    $(this).hide(); // fade it out
+                  }
+                  if (trnum <= maxRows) {
+                    $(this).show();
+                  } // else fade in Important in case if it ..
+                }); //  was fade out to fade it in
+                if (totalRows > maxRows) {
+                  // if tr total rows gt max rows option
+                  var pagenum = Math.ceil(totalRows / maxRows); // ceil total(rows/maxrows) to get ..
+                  //	numbers of pages
+                  for (var i = 1; i <= pagenum; ) {
+                    // for each page append pagination li
+                    $('.pagination #prev')
+                      .before('<li data-page="' + i + '">\
+								  <span>' + i++ + '</span>\
+								</li>')
+                      .show();
+                  } // end for i
+                } // end if row count > max rows
+                $('.pagination [data-page="1"]').addClass('active'); // add active class to the first li
+                $('.pagination li').on('click', function (evt) {
+                  // on click each page
+                  evt.stopImmediatePropagation();
+                  evt.preventDefault();
+                  var pageNum = $(this).attr('data-page'); // get it's number
+
+                  var maxRows = parseInt($('#maxRows').val()); // get Max Rows from select option
+
+                  if (pageNum == 'prev') {
+                    if (lastPage == 1) {
+                      return;
+                    }
+                    pageNum = --lastPage;
+                  }
+                  if (pageNum == 'next') {
+                    if (lastPage == $('.pagination li').length - 2) {
+                      return;
+                    }
+                    pageNum = ++lastPage;
+                  }
+
+                  lastPage = pageNum;
+                  var trIndex = 0; // reset tr counter
+                  $('.pagination li').removeClass('active'); // remove active class from all li
+                  $('.pagination [data-page="' + lastPage + '"]').addClass('active'); // add active class to the clicked
+                  // $(this).addClass('active');					// add active class to the clicked
+                  limitPagging();
+                  $(table + ' tr:gt(0)').each(function () {
+                    // each tr in table not the header
+                    trIndex++; // tr index counter
+                    // if tr index gt maxRows*pageNum or lt maxRows*pageNum-maxRows fade if out
+                    if (trIndex > maxRows * pageNum || trIndex <= maxRows * pageNum - maxRows) {
+                      $(this).hide();
+                    } else {
+                      $(this).show();
+                    } //else fade in
+                  }); // end of for each tr in table
+                }); // end of on click pagination list
+                limitPagging();
+              })
+              .val(5)
+              .change();
+
+            // end of on select change
+
+            // END OF PAGINATION
+          }
+          getPagination('#tabel');
+        });
+
+        fnSendToNR('log-tabel', 'log-tabel');
+
+        // Listen for incoming messages from Node-RED
+
+        uibuilder.onChange('msg', function (msg) {
+          console.info('[indexjs:uibuilder.onChange] msg received from Node-RED server:', msg);
+          if (msg.topic == 'log-tabel' && msg.payload.length > 0) {
+            $.each(msg.payload, function (i, val) {
+              $('#tabel tbody').append(`<tr>
+                <td data-column="No">${i + 1}</td>
+                <td data-column="No Mesin">${val.no_mesin}</td>
+          <td data-column="Nama Problem">${val.nama_problem}</td>
+          <td data-column="PIC Engineering">${val.no_penneng_eng}</td>
+          <td data-column="PIC Produksi">${val.no_penneng_prod}</td>
+          <td data-column="Tanggal">${new Date(val.tanggal).toLocaleDateString('en-US')}</td>
+          <td data-column="Waktu">${val.waktu}</td>
+        </tr>`);
+            });
+          } else {
+            $('.tabel tbody').append('<h1>Data tidak tersedia</h1>');
+          }
+        });
+      };
+    </script>
+    <!-- <script src="./index.js"> -->
+    <!-- /* OPTIONAL: Put your custom code here */ -->
+    <!-- // </script> -->
+
+    <!-- <script src="https://webrtc.github.io/adapter/adapter-latest.js" type="text/javascript"></script>
+    <script src="./dist/quagga.min.js" type="text/javascript"></script>
+    <script src="./live_w_locator.js" type="text/javascript"></script> -->
+    <!-- <script src="./js/myscript.js"></script> -->
+  </body>
+</html>

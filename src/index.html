@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home - KTCXPGT</title>
+    <link rel="stylesheet" href="./css/mystyle.css" />
+    <link rel="stylesheet" href="../uibuilder/vendor/sweetalert2/dist/sweetalert2.css" />
+    <script src="../uibuilder/vendor/sweetalert2/dist/sweetalert2.all.min.js"></script>
+    <link rel="manifest" href="./manifest.json">
+  </head>
+  <body>
+    <div class="big-container">
+      <header>
+        <button class="btn-menu">=</button>
+        <h3 class="font-title title">scanner</h3>
+      </header>
+      <div id="last-scan" class="last-scan">
+        <h3 class="font-title title-checklist">scan terakhir</h3>
+        <div class="konten-lastscan">
+          <img src="./img/home.svg" alt="home" class="home-logo" width="63px" />
+          <div>
+            <h4 class="mesin"></h4>
+            <h4 class="problem"></h4>
+            <div class="tgl-cont">
+              <img src="./img/Day.svg" width="15px" alt="logo" />
+              <h6 class="tanggal"></h6>
+            </div>
+            <div class="jam-cont">
+              <img src="./img/glyph.svg" width="15px" alt="logo" />
+              <h6 class="jam"></h6>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="checklist">
+        <h3 class="font-title title-checklist">alur unlock mesin</h3>
+        <ul>
+          <li class="list-checklist" style="margin-bottom: 5px">
+            <p class="list font-checklist">1.</p>
+            <select name="problem" id="problem" class="list">
+              <option value="">-- Pilih Problem Disini --</option>
+              <option value="topup-oli">Top Up Oli</option>
+              <option value="flex-steam-bocor">Flex Steam Bocor</option>
+            </select>
+          </li>
+          <li class="list-checklist">
+            <p class="list font-checklist">2. scan mesin</p>
+          </li>
+          <li class="list-checklist">
+            <p class="list font-checklist">3. scan penneng engineer</p>
+          </li>
+          <li class="list-checklist">
+            <p class="list font-checklist">4. scan penneng leader line</p>
+          </li>
+        </ul>
+      </div>
+
+      <footer>
+        <div class="lengkung"></div>
+        <div class="float-button">+</div>
+        <div class="menu-bottom">
+          <img src="./img/Settings-logo.svg" alt="settings" style="color: gray" />
+          <img src="./img/Home-logo.svg" alt="home" />
+          <img src="./img/Courses-logo.svg" alt="course" style="color: gray" />
+          <img src="./img/Community-logo.svg" alt="community" style="color: gray" />
+        </div>
+      </footer>
+    </div>
+
+    <script src="../uibuilder/vendor/socket.io/socket.io.js">
+      /* REQUIRED: Socket.IO is loaded only once for all instances. Without this, you don't get a websocket connection */
+    </script>
+    <script src="./uibuilderfe.min.js">
+      /* REQUIRED: remove 'min.' to use dev version */
+    </script>
+    <script src="./index.js">
+      /* OPTIONAL: Put your custom code here */
+    </script>
+
+    <script src="../uibuilder/vendor/jquery/dist/jquery.js" type="text/javascript"></script>
+    <!-- <script src="https://webrtc.github.io/adapter/adapter-latest.js" type="text/javascript"></script>
+    <script src="./dist/quagga.min.js" type="text/javascript"></script>
+    <script src="./live_w_locator.js" type="text/javascript"></script> -->
+    <script src="./js/myscript.js"></script>
+    <script >
+      
+
+// Register the service worker
+if ('serviceWorker' in navigator) {
+  // Wait for the 'load' event to not block other work
+  window.addEventListener('load', async () => {
+    // Try to register the service worker.
+    try {
+      const reg = await navigator.serviceWorker.register('./js/sw.js');
+      console.log('Service worker registered! 😎', reg);
+    } catch (err) {
+      console.log('😥 Service worker registration failed: ', err);
+    }
+  });
+}
+    </script>
+    <script>
+      
+
+        // let deferredPrompt;
+
+        // window.addEventListener('beforeinstallprompt', (e) => {
+        //   // Prevent Chrome 67 and earlier from automatically showing the prompt
+        //   e.preventDefault();
+        //   // Stash the event so it can be triggered later.
+        //   deferredPrompt = e;
+        //   // Update UI notify the user they can add to home screen
+        //   btnAdd.style.display = 'block';
+        //   confirm('Apakah anda ingin menginstall?');
+        // });
+
+        // btnAdd.addEventListener('click', (e) => {
+        // // hide our user interface that shows our A2HS button
+        // btnAdd.style.display = 'none';
+        // // Show the prompt
+        // deferredPrompt.prompt();
+        // // Wait for the user to respond to the prompt
+        // deferredPrompt.userChoice
+        //   .then((choiceResult) => {
+        //     if (choiceResult.outcome === 'accepted') {
+        //       console.log('User accepted the A2HS prompt');
+        //     } else {
+        //       console.log('User dismissed the A2HS prompt');
+        //     }
+        //     deferredPrompt = null;
+        //   });
+      // });
+
+    </script>
+  </body>
+</html>
